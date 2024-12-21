@@ -2,8 +2,19 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from '../styles/HomePage.module.css';
 import { useToast } from "@chakra-ui/toast";
-
-
+import group2 from "../assets/group2.svg";
+import blockchain from "../assets/blockchain.jpg"
+import will_management_img from "../assets/will_management_img.jpg";
+import documents from "../assets/documents.jpg";
+import interface1 from "../assets/interface.jpg"
+import privacy from "../assets/privacy.jpg"
+import integration from "../assets/integration.jpg"
+import scalable from "../assets/scalable.jpg"
+import transparency from "../assets/transparency.jpg"
+import splash from "../assets/splash.svg"
+import client from "../assets/client.jpg"
+import registrar from "../assets/registrar.png"
+import beneficiary from "../assets/beneficiary.png"
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -103,7 +114,7 @@ const HomePage = () => {
         <div className={styles.navbar}>
           <div className={styles.nav}>
             <button className={styles.logo} onClick={onLogoClick}>
-              E-Vault
+              WillChain
             </button>
             <div className={styles.menuright}>
               <div className={styles.menulinks}>
@@ -115,7 +126,7 @@ const HomePage = () => {
                 </button>
               </div>
               <button className={styles.hamburgerIcon}>
-                <img className={styles.group2Icon} alt="" src="/group2.svg" />
+                <img className={styles.group2Icon} alt="" src={will_management_img} />
               </button>
             </div>
           </div>
@@ -124,8 +135,8 @@ const HomePage = () => {
           <div className={styles.herotext}>
             <div className={styles.herocta}>
               <div className={styles.title}>
-                <p className={styles.cardio}>{`Legacy `}</p>
-                <p className={styles.cardio} style={{paddingTop:"30px"}}>- Vault</p>
+                <p className={styles.cardio} style={{paddingLeft:"70px"}}> {`Will`}</p>
+                <p className={styles.cardio} style={{paddingTop:"30px"}}>Chain</p>
               </div>
               <div className={styles.subtitle}>
               A secure, decentralized vault for managing wills and safeguarding your legacy with trust and transparency.
@@ -143,7 +154,7 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <img className={styles.heroimageIcon} alt="" src="/documents.jpg" />
+          <img className={styles.heroimageIcon} alt="" src={documents} />
         </div>
         <div
           className={styles.popularexercisessection}
@@ -160,7 +171,7 @@ const HomePage = () => {
                   <img
                     className={styles.cardimageIcon}
                     alt=""
-                    src="/blockchain.jpg"
+                    src={blockchain}
                   />
                   <div className={styles.text}>
                     <div className={styles.titles}>
@@ -171,7 +182,7 @@ const HomePage = () => {
                   </div>
                 </div>
                 <div className={styles.exercisecard}>
-                  <img className={styles.imageIcon} alt="" src="/interface.jpg" />
+                  <img className={styles.imageIcon} alt="" src={interface1} />
                   <div className={styles.text}>
                     <div className={styles.titles}>
                       <div className={styles.popularExercises}>
@@ -184,7 +195,7 @@ const HomePage = () => {
   
               <div className={styles.column1}>
                 <div className={styles.exercisecard2}>
-                  <img className={styles.imageIcon} alt="" src="/privacy.jpg" />
+                  <img className={styles.imageIcon} alt="" src={privacy} />
                   <div className={styles.text}>
                     <div className={styles.titles}>
                       <div className={styles.popularExercises}>
@@ -197,7 +208,7 @@ const HomePage = () => {
                   <img
                     className={styles.imageIcon}
                     alt=""
-                    src="/integration.jpg"
+                    src={integration}
                   />
                   <div className={styles.text}>
                     <div className={styles.titles}>
@@ -214,7 +225,7 @@ const HomePage = () => {
   
               <div className={styles.column1}>
                 <div className={styles.exercisecard2}>
-                  <img className={styles.imageIcon} alt="" src="/scalable.jpg" />
+                  <img className={styles.imageIcon} alt="" src={scalable} />
                   <div className={styles.text}>
                     <div className={styles.titles}>
                       <div className={styles.popularExercises}>
@@ -227,7 +238,7 @@ const HomePage = () => {
                   <img
                     className={styles.imageIcon}
                     alt=""
-                    src="/transparency.jpg"
+                    src={transparency}
                   />
                   <div className={styles.text}>
                     <div className={styles.titles}>
@@ -246,11 +257,11 @@ const HomePage = () => {
               <div className={styles.title5}>
                 <h2 className={styles.workoutProgramMadeContainer}>
                   <p className={styles.cardio}>Secure</p>
-                  <p className={styles.cardio}>E-Vault</p>
+                  <p className={styles.cardio}>WillChain</p>
                   <p className={styles.cardio}>Made</p>
                   <p className={styles.cardio}>For You</p>
                 </h2>
-                <img className={styles.splashIcon} alt="" src="/splash.svg" />
+                <img className={styles.splashIcon} alt="" src={splash} />
               </div>
               <div className={styles.description}>
                 <div className={styles.loremIpsumDolor}>
@@ -268,16 +279,16 @@ const HomePage = () => {
           <div className={styles.trainersimages}>
             <div className={styles.desktop}>
               <div className={styles.trainer3}>
-                <img className={styles.trainer3Child} alt="" src="/client.jpg" />
-                <div className={styles.samanthaWilliam}>Client</div>
+                <img className={styles.trainer3Child} alt="" src={client} />
+                <div className={styles.samanthaWilliam}>Owner</div>
               </div>
               <div className={styles.trainer2}>
-                <img className={styles.trainer3Child} alt="" src="/lawyer.jpg" />
-                <div className={styles.samanthaWilliam}>Lawyer</div>
+                <img className={styles.trainer3Child} alt="" src={beneficiary} />
+                <div className={styles.samanthaWilliam}>Beneficiary</div>
               </div>
               <div className={styles.trainer11}>
-                <img className={styles.trainer1Child} alt="" src="/judge.jpg" />
-                <div className={styles.jonathanWise}>Judge</div>
+                <img className={styles.trainer1Child} alt="" src={registrar} />
+                <div className={styles.jonathanWise}>Registrar</div>
               </div>
             </div>
             <div className={styles.tablet}>
@@ -311,8 +322,8 @@ const HomePage = () => {
               <div className={styles.div6}>02</div>
               <div className={styles.action}>
                 <div className={styles.titles3}>
-                  <div className={styles.title6}>Create A New Case</div>
-                  <div className={styles.courses}>some description</div>
+                  <div className={styles.title6}>Create A New Will</div>
+                  <div className={styles.courses}>Users define the contents of the will, specifying how they want their assets divided among beneficiaries.</div>
                 </div>
               </div>
             </div>
@@ -321,8 +332,8 @@ const HomePage = () => {
               <div className={styles.div6}>03</div>
               <div className={styles.action}>
                 <div className={styles.titles3}>
-                  <div className={styles.title6}>Add Stakeholders</div>
-                  <div className={styles.courses}>some description</div>
+                  <div className={styles.title6}>Add Beneficiaries</div>
+                  <div className={styles.courses}>Users specify the individuals involved and define the assets or percentage of the estate each beneficiary will receive.</div>
                 </div>
               </div>
             </div>
@@ -331,21 +342,21 @@ const HomePage = () => {
               <div className={styles.div6}>04</div>
               <div className={styles.action}>
                 <div className={styles.titles3}>
-                  <div className={styles.title6}>Upload Documents</div>
-                  <div className={styles.courses}>some description</div>
+                  <div className={styles.title6}>Set Locking Period</div>
+                  <div className={styles.courses}>he locking period is set by the user, ensuring that no changes can be made to the will during this time. After the locking period expires, the smart contract will automatically execute, distributing the assets according to the instructions provided in the will.</div>
                 </div>
               </div>
             </div>
             <img className={styles.separatorIcon} alt="" src="/separator.svg" />
-            <div className={styles.category}>
+            {/* <div className={styles.category}>
               <div className={styles.div6}>05</div>
               <div className={styles.action}>
                 <div className={styles.titles3}>
-                  <div className={styles.title6}>Share Documents Securely</div>
+                  <div className={styles.title6}>Smart Contr</div>
                   <div className={styles.courses}>some description</div>
                 </div>
               </div>
-            </div>
+            </div> */}
             <img className={styles.separatorIcon} alt="" src="/separator.svg" />
           </div>
         </div>
