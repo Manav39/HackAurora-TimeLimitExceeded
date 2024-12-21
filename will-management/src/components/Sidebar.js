@@ -5,7 +5,7 @@ import Button from './ui/Button';
 import Avatar from './ui/Avatar';
 
 const routes = [
-  { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
+  { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
   { label: 'Wills', icon: ScrollText, path: '/wills' },
   { label: 'Beneficiaries', icon: Users, path: '/beneficiaries' },
   { label: 'Documents', icon: FileText, path: '/documents' },
