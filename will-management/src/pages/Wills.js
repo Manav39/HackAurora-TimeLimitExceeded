@@ -39,7 +39,9 @@ function Wills() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedWill, setSelectedWill] = useState(null);
-  const [beneficiaries, setBeneficiaries] = useState([{ name: "", percentage: "" }]);
+  const [beneficiaries, setBeneficiaries] = useState([
+    { name: "", percentage: "" },
+  ]);
   const [asset, setAsset] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
 
@@ -52,7 +54,10 @@ function Wills() {
   };
 
   const calculateTotalPercentage = () =>
-    beneficiaries.reduce((sum, beneficiary) => sum + parseFloat(beneficiary.percentage || 0), 0);
+    beneficiaries.reduce(
+      (sum, beneficiary) => sum + parseFloat(beneficiary.percentage || 0),
+      0
+    );
 
   const validateForm = () => {
     if (!asset) {
@@ -141,10 +146,13 @@ function Wills() {
     if (will) {
       setIsEditMode(true);
       setSelectedWill(will);
-      setBeneficiaries(beneficiariesList.map((name, i) => ({
-        name: will.beneficiaries > i ? name : "",
-        percentage: will.beneficiaries > i ? (100 / will.beneficiaries).toString() : "",
-      })));
+      setBeneficiaries(
+        beneficiariesList.map((name, i) => ({
+          name: will.beneficiaries > i ? name : "",
+          percentage:
+            will.beneficiaries > i ? (100 / will.beneficiaries).toString() : "",
+        }))
+      );
       setAsset(will.asset || "");
       setReleaseDate(will.releaseDate || "");
     } else {
@@ -197,10 +205,16 @@ function Wills() {
           <thead className="bg-gray-100 text-gray-700 border-b">
             <tr>
               <th className="px-4 py-3 text-left font-semibold">WILL ID</th>
-              <th className="px-4 py-3 text-left font-semibold">CREATED DATE</th>
+              <th className="px-4 py-3 text-left font-semibold">
+                CREATED DATE
+              </th>
               <th className="px-4 py-3 text-left font-semibold">STATUS</th>
-              <th className="px-4 py-3 text-left font-semibold">BENEFICIARIES</th>
-              <th className="px-4 py-3 text-left font-semibold">LAST MODIFIED</th>
+              <th className="px-4 py-3 text-left font-semibold">
+                BENEFICIARIES
+              </th>
+              <th className="px-4 py-3 text-left font-semibold">
+                LAST MODIFIED
+              </th>
               <th className="px-4 py-3 text-left font-semibold">ACTIONS</th>
             </tr>
           </thead>
@@ -210,14 +224,20 @@ function Wills() {
                 <td className="px-4 py-2 font-medium">{will.id}</td>
                 <td className="px-4 py-2">{will.created}</td>
                 <td className="px-4 py-2">
-                  <Badge variant={will.status === "Active" ? "success" : "warning"}>
+                  <Badge
+                    variant={will.status === "Active" ? "success" : "warning"}
+                  >
                     {will.status}
                   </Badge>
                 </td>
                 <td className="px-4 py-2">{will.beneficiaries}</td>
                 <td className="px-4 py-2">{will.lastModified}</td>
                 <td className="px-4 py-2">
-                  <Button variant="link" onClick={() => openModal(will)} className="mr-2">
+                  <Button
+                    variant="link"
+                    onClick={() => openModal(will)}
+                    className="mr-2"
+                  >
                     View
                   </Button>
                 </td>
@@ -251,7 +271,9 @@ function Wills() {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-medium">Beneficiaries</label>
+            <label className="block mb-1 text-sm font-medium">
+              Beneficiaries
+            </label>
             {beneficiaries.map((beneficiary, index) => (
               <div key={index} className="flex items-center gap-2 mb-2">
                 <Select
@@ -269,8 +291,9 @@ function Wills() {
                   {beneficiariesList
                     .filter(
                       (beneficiaryName) =>
-                        !beneficiaries.some((b) => b.name === beneficiaryName) ||
-                        beneficiary.name === beneficiaryName
+                        !beneficiaries.some(
+                          (b) => b.name === beneficiaryName
+                        ) || beneficiary.name === beneficiaryName
                     )
                     .map((beneficiaryName, i) => (
                       <option key={i} value={beneficiaryName}>
@@ -286,7 +309,8 @@ function Wills() {
                   onChange={(e) => {
                     const newPercentage = parseFloat(e.target.value || 0);
                     if (
-                      calculateTotalPercentage() - (beneficiary.percentage || 0) +
+                      calculateTotalPercentage() -
+                        (beneficiary.percentage || 0) +
                         newPercentage <=
                       100
                     ) {
@@ -294,7 +318,9 @@ function Wills() {
                       newBeneficiaries[index].percentage = newPercentage;
                       setBeneficiaries(newBeneficiaries);
                     } else {
-                      alert("The total allocation percentage cannot exceed 100%.");
+                      alert(
+                        "The total allocation percentage cannot exceed 100%."
+                      );
                     }
                   }}
                   className="w-20"
@@ -318,7 +344,9 @@ function Wills() {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-medium">Release Date & Time</label>
+            <label className="block mb-1 text-sm font-medium">
+              Release Date & Time
+            </label>
             <Input
               type="datetime-local"
               value={releaseDate}
@@ -329,7 +357,11 @@ function Wills() {
 
           {isEditMode ? (
             <div className="flex space-x-2">
-              <Button variant="link" onClick={handleDelete} className="text-red-600">
+              <Button
+                variant="link"
+                onClick={handleDelete}
+                className="text-red-600"
+              >
                 Delete Will
               </Button>
               <Button type="submit" className="w-full">
