@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import { PlusCircle, Edit, Trash, BarChart, Home, LineChart, Box } from "lucide-react";
+import { PlusCircle, Edit, Trash, BarChart, Coins, House, DollarSign } from "lucide-react";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 
 function Assets() {
   const assetSummary = [
     { title: "Total Asset Value", value: "$2,450,000", icon: <BarChart className="h-6 w-6" />, color: "bg-green-100 text-green-600" },
-    { title: "Real Estate", value: "$1,800,000", icon: <Home className="h-6 w-6" />, color: "bg-blue-100 text-blue-600" },
-    { title: "Investments", value: "$450,000", icon: <LineChart className="h-6 w-6" />, color: "bg-purple-100 text-purple-600" },
-    { title: "Other Assets", value: "$200,000", icon: <Box className="h-6 w-6" />, color: "bg-yellow-100 text-yellow-600" },
+    { title: "Gold", value: "$850,000", icon: <Coins className="h-6 w-6" />, color: "bg-yellow-100 text-yellow-600" },
+    { title: "Crypto", value: "$400,000", icon: <DollarSign className="h-6 w-6" />, color: "bg-purple-100 text-purple-600" },
+    { title: "Property", value: "$1,200,000", icon: <House className="h-6 w-6" />, color: "bg-blue-100 text-blue-600" },
   ];
 
   const [assets, setAssets] = useState([
-    { assetType: "Real Estate", name: "Primary Residence", value: "$850,000", status: "Verified", statusColor: "text-green-600 bg-green-100", lastUpdated: "Jan 15, 2024" },
-    { assetType: "Investments", name: "Stock Portfolio", value: "$450,000", status: "Pending", statusColor: "text-yellow-600 bg-yellow-100", lastUpdated: "Jan 14, 2024" },
+    { assetType: "Gold", name: "Gold Bar", value: "$500,000", status: "Verified", statusColor: "text-green-600 bg-green-100", lastUpdated: "Jan 15, 2024" },
+    { assetType: "Crypto", name: "Bitcoin Wallet", value: "$300,000", status: "Pending", statusColor: "text-yellow-600 bg-yellow-100", lastUpdated: "Jan 14, 2024" },
+    { assetType: "Property", name: "Residential Property", value: "$1,200,000", status: "Verified", statusColor: "text-green-600 bg-green-100", lastUpdated: "Jan 10, 2024" },
   ]);
 
   const [isModalOpen, setModalOpen] = useState(false);

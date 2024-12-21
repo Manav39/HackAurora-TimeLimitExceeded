@@ -11,8 +11,11 @@ const routes = [
   { label: 'Documents', icon: FileText, path: '/documents' },
   { label: 'Assets', icon: Wallet, path: '/assets' },
   { label: 'Transactions', icon: History, path: '/transactions' },
-  { label: 'Contracts', icon: Shield, path: '/contracts' },
-  { label: 'Settings', icon: Settings, path: '/settings' },
+  // { label: 'Notifications', icon: Bell, path: '/notifications' },
+  // { label: 'Contracts', icon: Shield, path: '/contracts' },
+  { label: 'My Stake', icon: Wallet, path: '/mystake' }, 
+  // { label: 'Settings', icon: Settings, path: '/settings' },
+  
 ];
 
 function Sidebar() {
@@ -26,9 +29,6 @@ function Sidebar() {
             <Shield className="h-4 w-4 text-primary-foreground" />
           </div>
           <span className="text-lg font-semibold">WillChain</span>
-          <Button variant="ghost" size="icon" className="ml-auto">
-            <Bell className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
