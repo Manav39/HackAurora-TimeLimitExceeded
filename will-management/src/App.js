@@ -10,6 +10,8 @@ import Contracts from './pages/Contracts';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 import HomePage from './pages/HomePage';
+import MyStake from './pages/MyStake';
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function AppContent() {
           <Route path="/contracts" element={<Contracts />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/mystake" element={<MyStake />} />
+          <Route path="/notifications" element={<Notifications/>} />
         </Routes>
       </main>
     </div>
