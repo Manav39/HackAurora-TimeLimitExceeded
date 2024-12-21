@@ -1,3 +1,22 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./pages/Dashboard";
+import Wills from "./pages/Wills";
+import Beneficiaries from "./pages/Beneficiaries";
+import Documents from "./pages/Documents";
+import Assets from "./pages/Assets";
+import Contracts from "./pages/Contracts";
+import Transactions from "./pages/Transactions";
+import Settings from "./pages/Settings";
+import HomePage from "./pages/HomePage";
+import MyStake from "./pages/MyStake";
+import Notifications from "./pages/Notifications";
 import React, { useContext, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -48,6 +67,8 @@ function AppContent() {
           <Route path="/contracts" element={<Contracts />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/mystake" element={<MyStake />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </main>
     </div>
