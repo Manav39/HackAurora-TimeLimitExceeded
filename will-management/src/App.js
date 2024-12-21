@@ -18,12 +18,9 @@ import HomePage from "./pages/HomePage";
 import MyStake from "./pages/MyStake";
 import Notifications from "./pages/Notifications";
 import { TransactionContext } from "./context/context";
+import WillForm from "./pages/WillForm";
 
 function App() {
-  const { fetchContractDetails } = useContext(TransactionContext);
-  useEffect(() => {
-    fetchContractDetails();
-  }, []);
   return (
     <Router>
       <AppContent />
@@ -43,7 +40,7 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
 
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/wills" element={<Wills />} />
+          <Route path="/wills" element={<WillForm />} />
           <Route path="/beneficiaries" element={<Beneficiaries />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/assets" element={<Assets />} />
