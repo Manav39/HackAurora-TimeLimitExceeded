@@ -1,9 +1,11 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { React, useState, useContext, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, ScrollText, Users, FileText, Shield, Wallet, History, Settings, Bell } from 'lucide-react';
+import { TransactionContext } from "../context/context";
 import Button from './ui/Button';
 import Avatar from './ui/Avatar';
 
+// Define the full set of routes
 const routes = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
   { label: 'Wills', icon: ScrollText, path: '/wills' },
@@ -11,15 +13,40 @@ const routes = [
   { label: 'Documents', icon: FileText, path: '/documents' },
   { label: 'Assets', icon: Wallet, path: '/assets' },
   { label: 'Transactions', icon: History, path: '/transactions' },
-  // { label: 'Notifications', icon: Bell, path: '/notifications' },
-  // { label: 'Contracts', icon: Shield, path: '/contracts' },
-  { label: 'My Stake', icon: Wallet, path: '/mystake' }, 
-  // { label: 'Settings', icon: Settings, path: '/settings' },
-  
+  { label: 'My Stake', icon: Wallet, path: '/mystake' },
 ];
 
 function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const { getBeneficiaryWills } = useContext(TransactionContext);
+  const [data, setData] = useState([]);
+  
+  // Handle conditional sidebar rendering for registrarDashboard
+  const isRegistrarDashboard = location.pathname === '/verify';
+  
+  // Fetching data
+  useEffect(() => {
+    const fetchData = async () => {
+      const account = localStorage.getItem("account");
+      const res = await getBeneficiaryWills(account);
+      if (res && Array.isArray(res)) {
+        setData(res);
+        // Check if any of the data contains will-Id 189
+        const isRegistrarRequired = res.some(item => item['will-Id'] === 189);
+        if (isRegistrarRequired) {
+          navigate('/verify'); // Redirect to registrarDashboard if will-Id is 189
+        }
+      } else {
+        console.error("Data fetch failed or response is not an array");
+      }
+    };
+    fetchData();
+  }, [getBeneficiaryWills, navigate]);
+
+  // Define the routes to be shown based on current route
+  const filteredRoutes = isRegistrarDashboard ? [{ label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' }] : routes;
 
   return (
     <div className="w-64 bg-white border-r h-screen flex flex-col">
@@ -34,7 +61,7 @@ function Sidebar() {
 
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
-          {routes.map((route) => {
+          {filteredRoutes.map((route) => {
             const Icon = route.icon;
             const isActive = location.pathname === route.path;
 

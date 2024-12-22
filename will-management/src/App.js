@@ -22,6 +22,7 @@ import WillForm from "./pages/WillForm";
 import ModifyWill from "./pages/ModifyWill";
 import DeleteWillForm from "./pages/DeleteWill";
 import OwnerWills from "./pages/OwnerWills";
+// import RegistrarDashboard from "./pages/RegistrarDashboard";
 import VerifyWillForm from "./pages/Verify";
 
 function App() {
@@ -56,6 +57,7 @@ function AppContent() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/mystake" element={<MyStake />} />
           <Route path="/notifications" element={<Notifications />} />
+          {/* <Route path="/registrarDashboard" element={<RegistrarDashboard />} /> */}
         </Routes>
       </main>
     </div>
