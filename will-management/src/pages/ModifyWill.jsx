@@ -1,15 +1,57 @@
-import React, { useContext, useState } from "react";
-import { TransactionContext } from "../context/context"; // Adjust this path as needed
+import React, { useContext, useState, useEffect } from "react";
+import { TransactionContext } from "../context/context";
+import { useLocation } from "react-router-dom";
 
 const WillForm = () => {
   const { modifyWill, isLoading } = useContext(TransactionContext);
-  const [willId, setWillId] = useState(0);
-  const [releaseTime, setReleaseTime] = useState(0);
-  const [assetName, setAssetName] = useState("");
-  const [assetCategory, setAssetCategory] = useState("");
-  const [beneficiaries, setBeneficiaries] = useState([
-    { address: "", stake: "", name: "" },
-  ]);
+  const { state } = useLocation(); // Access passed state
+  const willData = state?.will || {}; // Default to an empty object if no state passed
+
+  const parseHexToInt = (hex) => parseInt(hex, 16);
+
+  const parseReleaseTime = (time) => {
+    try {
+      if (time) {
+        const unixTime =
+          typeof time === "object" && time.toNumber
+            ? time.toNumber() * 1000 // Convert BigNumber to milliseconds
+            : parseInt(time, 10) * 1000; // Parse string/number to milliseconds
+        return new Date(unixTime).toISOString().slice(0, 16); // Convert to 'YYYY-MM-DDTHH:mm' format
+      }
+    } catch {
+      return new Date().toISOString().slice(0, 16); // Fallback to current time
+    }
+  };
+
+  const [willId, setWillId] = useState(
+    willData?.willId?._hex ? parseHexToInt(willData.willId._hex) : 0
+  );
+  const [releaseTime, setReleaseTime] = useState(parseReleaseTime(willData?.releaseTime));
+  const [assetName, setAssetName] = useState(willData?.assetName || "");
+  const [assetCategory, setAssetCategory] = useState(willData?.assetCategory || "");
+  const [beneficiaries, setBeneficiaries] = useState(
+    willData?.beneficiaries?.map((beneficiary) => ({
+      address: beneficiary[0] || "",
+      stake: beneficiary[1]?._hex ? parseHexToInt(beneficiary[1]._hex) : 0,
+      name: beneficiary[3] || "",
+    })) || [{ address: "", stake: "", name: "" }]
+  );
+
+  useEffect(() => {
+    if (willData) {
+      setWillId(willData?.willId?._hex ? parseHexToInt(willData.willId._hex) : 0);
+      setReleaseTime(parseReleaseTime(willData.releaseTime));
+      setAssetName(willData.assetName || "");
+      setAssetCategory(willData.assetCategory || "");
+      setBeneficiaries(
+        willData.beneficiaries?.map((beneficiary) => ({
+          address: beneficiary[0] || "",
+          stake: beneficiary[1]?._hex ? parseHexToInt(beneficiary[1]._hex) : 0,
+          name: beneficiary[3] || "",
+        })) || [{ address: "", stake: "", name: "" }]
+      );
+    }
+  }, [willData]);
 
   const handleAddBeneficiary = () => {
     setBeneficiaries([...beneficiaries, { address: "", stake: "", name: "" }]);
@@ -24,19 +66,15 @@ const WillForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Format beneficiary data from the form
     const beneficiaryData = {
       addresses: beneficiaries.map((beneficiary) => beneficiary.address),
-      shares: beneficiaries.map((beneficiary) => beneficiary.stake),
+      shares: beneficiaries.map((beneficiary) => parseFloat(beneficiary.stake) || 0),
       names: beneficiaries.map((beneficiary) => beneficiary.name),
     };
 
-    // Extract form values
-    const will = parseInt(willId);
-    const rt = parseInt(releaseTime);
+    const rt = new Date(releaseTime).getTime() / 1000; // Convert to UNIX timestamp
 
-    // Call the modifyWill function from context
-    await modifyWill(will, beneficiaryData, rt, assetName, assetCategory);
+    await modifyWill(willId, beneficiaryData, rt, assetName, assetCategory);
   };
 
   return (
@@ -45,24 +83,20 @@ const WillForm = () => {
       <form onSubmit={handleSubmit}>
         {/* Will ID */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Will ID
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Will ID</label>
           <input
             type="number"
             value={willId}
-            onChange={(e) => setWillId(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled // Disable editing of Will ID
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
           />
         </div>
 
         {/* Release Time */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Release Time (UNIX Timestamp)
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Release Time</label>
           <input
-            type="number"
+            type="datetime-local"
             value={releaseTime}
             onChange={(e) => setReleaseTime(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -71,9 +105,7 @@ const WillForm = () => {
 
         {/* Asset Name */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Asset Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Asset Name</label>
           <input
             type="text"
             value={assetName}
@@ -84,9 +116,7 @@ const WillForm = () => {
 
         {/* Asset Category */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Asset Category
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Asset Category</label>
           <input
             type="text"
             value={assetCategory}
@@ -100,9 +130,7 @@ const WillForm = () => {
         {beneficiaries.map((beneficiary, index) => (
           <div key={index} className="mb-4 p-4 bg-gray-100 rounded-lg">
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Address
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Address</label>
               <input
                 type="text"
                 value={beneficiary.address}
@@ -113,9 +141,7 @@ const WillForm = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Stake
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Stake (%)</label>
               <input
                 type="number"
                 value={beneficiary.stake}
@@ -126,9 +152,7 @@ const WillForm = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
                 type="text"
                 value={beneficiary.name}

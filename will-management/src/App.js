@@ -41,9 +41,9 @@ function AppContent() {
       <main className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/modify" element={<ModifyWill />} />
+          <Route path="/modify/*" element={<ModifyWill />} />
           <Route path="/ownerwills" element={<OwnerWills />} />
-          <Route path="/delete" element={<DeleteWillForm />} />
+          <Route path="/delete/*" element={<DeleteWillForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/wills" element={<Wills />} />
           <Route path="/beneficiaries" element={<Beneficiaries />} />
