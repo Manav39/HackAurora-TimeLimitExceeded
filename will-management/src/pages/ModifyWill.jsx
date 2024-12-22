@@ -1,13 +1,12 @@
 import React, { useContext, useState } from "react";
-import { TransactionContext } from "../context/context";
+import { TransactionContext } from "../context/context"; // Adjust this path as needed
 
 const WillForm = () => {
-  const { createWill } = useContext(TransactionContext);
+  const { modifyWill, isLoading } = useContext(TransactionContext);
   const [willId, setWillId] = useState(0);
   const [releaseTime, setReleaseTime] = useState(0);
   const [assetName, setAssetName] = useState("");
   const [assetCategory, setAssetCategory] = useState("");
-  const [amount, setAmount] = useState(""); // New state for amount
   const [beneficiaries, setBeneficiaries] = useState([
     { address: "", stake: "", name: "" },
   ]);
@@ -28,49 +27,21 @@ const WillForm = () => {
     // Format beneficiary data from the form
     const beneficiaryData = {
       addresses: beneficiaries.map((beneficiary) => beneficiary.address),
-      shares: beneficiaries.map((beneficiary) => beneficiary.stake), // Stake represents the share
+      shares: beneficiaries.map((beneficiary) => beneficiary.stake),
       names: beneficiaries.map((beneficiary) => beneficiary.name),
     };
 
     // Extract form values
-    const will = parseInt(willId); // Ensure Will ID is an integer
-    const rt = parseInt(releaseTime); // Ensure release time is an integer (UNIX timestamp)
+    const will = parseInt(willId);
+    const rt = parseInt(releaseTime);
 
-    // Call the createWill function
-    await createWill(
-      will,
-      beneficiaryData,
-      rt,
-      assetName,
-      assetCategory,
-      amount
-    );
-    // e.preventDefault();
-    // const willId = 11; // Example Will ID
-    // const beneficiaryData = {
-    //   addresses: ["0xf40b291189aE7F917c39D0B7e327E0A929c9952c"],
-    //   shares: [100], // 50% share for each beneficiary
-    //   names: ["John Doe"],
-    // };
-    // const releaseTime = Math.floor(Date.now() / 1000) + 3600 * 24 * 7; // Release time: 1 week from now (UNIX Timestamp)
-    // const assetName = "House";
-    // const assetCategory = "Real Estate";
-    // const amount = "0.01"; // Amount in Ether to send with the transaction
-
-    // // Call the createWill function
-    // createWill(
-    //   willId,
-    //   beneficiaryData,
-    //   releaseTime,
-    //   assetName,
-    //   assetCategory,
-    //   amount
-    // );
+    // Call the modifyWill function from context
+    await modifyWill(will, beneficiaryData, rt, assetName, assetCategory);
   };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-semibold mb-6">Create Will</h1>
+      <h1 className="text-2xl font-semibold mb-6">Modify Will</h1>
       <form onSubmit={handleSubmit}>
         {/* Will ID */}
         <div className="mb-4">
@@ -120,19 +91,6 @@ const WillForm = () => {
             type="text"
             value={assetCategory}
             onChange={(e) => setAssetCategory(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        {/* Amount */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Amount (Ether)
-          </label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)} // Handling amount input
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -197,7 +155,7 @@ const WillForm = () => {
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            Submit
+            {isLoading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </form>

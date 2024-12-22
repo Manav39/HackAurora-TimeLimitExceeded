@@ -19,6 +19,9 @@ import MyStake from "./pages/MyStake";
 import Notifications from "./pages/Notifications";
 import { TransactionContext } from "./context/context";
 import WillForm from "./pages/WillForm";
+import ModifyWill from "./pages/ModifyWill";
+import DeleteWillForm from "./pages/DeleteWill";
+import OwnerWills from "./pages/OwnerWills";
 
 function App() {
   return (
@@ -38,7 +41,9 @@ function AppContent() {
       <main className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<HomePage />} />
-
+          <Route path="/modify" element={<ModifyWill />} />
+          <Route path="/ownerwills" element={<OwnerWills />} />
+          <Route path="/delete" element={<DeleteWillForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/wills" element={<WillForm />} />
           <Route path="/beneficiaries" element={<Beneficiaries />} />

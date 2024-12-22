@@ -40,82 +40,56 @@ export const TransactionProvider = ({ children }) => {
 
   const createWill = async (
     willId,
-    beneficiaryData, // An object containing addresses, shares, and names
+    beneficiaryData,
     releaseTime,
     assetName,
     assetCategory,
     amount
   ) => {
     setIsLoading(true);
-
-    // Destructure beneficiaryData to get the individual arrays
     const { addresses, shares, names } = beneficiaryData;
 
     try {
-      // Get the contract instance
       const contract = getContractInstance();
-
-      // Log the input data for debugging
-      console.log(
-        willId,
-        addresses,
-        shares,
-        names,
-        releaseTime,
-        assetName,
-        assetCategory,
-        amount
-      );
-
-      // Call the createWill function on the contract
       const transaction = await contract.createWill(
         willId,
-        {
-          addresses: addresses,
-          shares: shares,
-          names: names,
-        },
+        { addresses, shares, names },
         releaseTime,
         assetName,
         assetCategory,
-        {
-          value: ethers.utils.parseEther(amount.toString()), // Amount passed as ethers
-        }
+        { value: ethers.utils.parseEther(amount.toString()) }
       );
 
-      // Wait for the transaction to be mined
       await transaction.wait();
-
-      // Show success toast
       toast.success("Will created successfully!");
     } catch (error) {
       console.error("Error creating will:", error);
-
-      // Show error toast
       toast.error("Failed to create will.");
     } finally {
-      // Set loading state to false
       setIsLoading(false);
     }
   };
 
   const modifyWill = async (
     willId,
-    newAssetName,
-    newAssetCategory,
     newBeneficiaryData,
-    newReleaseTime
+    newReleaseTime,
+    newAssetName,
+    newAssetCategory
   ) => {
     setIsLoading(true);
+    const { addresses, shares, names } = newBeneficiaryData;
+
     try {
       const contract = getContractInstance();
       const transaction = await contract.modifyWill(
         willId,
         newAssetName,
         newAssetCategory,
-        newBeneficiaryData,
+        { addresses, shares, names },
         newReleaseTime
       );
+
       await transaction.wait();
       toast.success("Will modified successfully!");
     } catch (error) {
@@ -131,8 +105,9 @@ export const TransactionProvider = ({ children }) => {
     try {
       const contract = getContractInstance();
       const transaction = await contract.verifyWill(willId);
+
       await transaction.wait();
-      toast.success("Will verified successfully!");
+      toast.success("Will verified and funds withdrawn successfully!");
     } catch (error) {
       console.error("Error verifying will:", error);
       toast.error("Failed to verify will.");
@@ -146,6 +121,7 @@ export const TransactionProvider = ({ children }) => {
     try {
       const contract = getContractInstance();
       const transaction = await contract.withdrawFunds(willId);
+
       await transaction.wait();
       toast.success("Funds withdrawn successfully!");
     } catch (error) {
@@ -161,6 +137,7 @@ export const TransactionProvider = ({ children }) => {
     try {
       const contract = getContractInstance();
       const transaction = await contract.deleteWill(willId);
+
       await transaction.wait();
       toast.success("Will deleted successfully!");
     } catch (error) {
@@ -171,15 +148,33 @@ export const TransactionProvider = ({ children }) => {
     }
   };
 
-  const fetchWills = async (method, param) => {
+  const getOwnerWills = async (ownerAddress) => {
     setIsLoading(true);
     try {
       const contract = getContractInstance();
-      const wills = await contract[method](param);
-      return wills;
+      const ownerWills = await contract.getOwnerWills(ownerAddress); // Get wills of the owner
+      return ownerWills;
     } catch (error) {
-      console.error("Error fetching wills:", error);
-      toast.error("Failed to fetch wills.");
+      console.error("Error fetching owner's wills:", error);
+      toast.error("Failed to fetch owner's wills.");
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch all wills of the beneficiary
+  const getBeneficiaryWills = async (beneficiaryAddress) => {
+    setIsLoading(true);
+    try {
+      const contract = getContractInstance();
+      const beneficiaryWills = await contract.getBeneficiaryWills(
+        beneficiaryAddress
+      ); // Get wills of the beneficiary
+      return beneficiaryWills;
+    } catch (error) {
+      console.error("Error fetching beneficiary's wills:", error);
+      toast.error("Failed to fetch beneficiary's wills.");
       return [];
     } finally {
       setIsLoading(false);
@@ -195,9 +190,10 @@ export const TransactionProvider = ({ children }) => {
         verifyWill,
         withdrawFunds,
         deleteWill,
-        fetchWills,
         currentAccount,
         isLoading,
+        getOwnerWills,
+        getBeneficiaryWills,
       }}
     >
       {children}
