@@ -12,7 +12,9 @@ const OwnerWillsList = () => {
     if (!ownerAddress) return;
     setIsLoading(true);
     try {
-      const ownerWills = await getOwnerWills();
+      const account = localStorage.getItem("account");
+      const ownerWills = await getOwnerWills(account);
+      console.log(ownerWills);
       setWills(ownerWills);
     } catch (error) {
       console.error("Error fetching owner's wills:", error);
@@ -55,7 +57,7 @@ const OwnerWillsList = () => {
               {wills.map((will, index) => (
                 <li key={index} className="mb-4 p-4 bg-gray-100 rounded-lg">
                   <h2 className="text-xl font-semibold">
-                    Will ID: {will.willId.toString()}
+                    Will ID: {will?.willId?.toString()}
                   </h2>{" "}
                   {/* Handle BigNumber with toString */}
                   <p>
@@ -79,10 +81,11 @@ const OwnerWillsList = () => {
                           <strong>Name:</strong> {beneficiary.name}
                         </p>
                         <p>
-                          <strong>Address:</strong> {beneficiary.address}
+                          <strong>Address:</strong> {beneficiary.beneficiary}
                         </p>
                         <p>
-                          <strong>Stake:</strong> {beneficiary.stake.toString()}
+                          <strong>Stake:</strong>{" "}
+                          {beneficiary?.share?.toString()}
                         </p>{" "}
                         {/* Handle BigNumber with toString */}
                       </li>
