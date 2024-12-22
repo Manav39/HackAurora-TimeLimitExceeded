@@ -22,6 +22,7 @@ import WillForm from "./pages/WillForm";
 import ModifyWill from "./pages/ModifyWill";
 import DeleteWillForm from "./pages/DeleteWill";
 import OwnerWills from "./pages/OwnerWills";
+import VerifyWillForm from "./pages/Verify";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function AppContent() {
       <main className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/verify" element={<VerifyWillForm />} />
           <Route path="/modify/*" element={<ModifyWill />} />
           <Route path="/ownerwills" element={<OwnerWills />} />
           <Route path="/delete/*" element={<DeleteWillForm />} />

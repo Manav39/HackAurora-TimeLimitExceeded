@@ -104,7 +104,7 @@ function Dashboard() {
 
 
       {/* Quick Actions */}
-      <Card>
+      {/* <Card>
         <div className="p-6">
           <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
           <div className="flex items-center justify-between gap-4">
@@ -122,7 +122,7 @@ function Dashboard() {
             </Button>
           </div>
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 }
