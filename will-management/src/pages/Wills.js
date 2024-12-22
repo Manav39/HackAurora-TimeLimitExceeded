@@ -5,6 +5,7 @@ import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
 import Table from "../components/ui/Table";
 import Badge from "../components/ui/Badge";
+import WillForm from "./WillForm";
 import Modal from "../components/ui/Modal";
 import { jsPDF } from "jspdf";
 import { Download } from "lucide-react";
@@ -51,6 +52,19 @@ function Wills() {
   ]);
   const [asset, setAsset] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
+  const [isWillFormOpen, setIsWillFormOpen] = useState(false); // State to toggle WillForm visibility
+
+  const handleCreateNewWill = () => {
+    setIsWillFormOpen(true); // Open the WillForm
+  };
+
+  const handleFormClose = () => {
+    setIsWillFormOpen(false); // Close the WillForm
+  };
+
+  const handleWillSubmit = (newWill) => {
+    setWills((prevWills) => [...prevWills, newWill]);
+  };
 
   const addBeneficiary = () => {
     setBeneficiaries([...beneficiaries, { name: "", percentage: "" }]);
@@ -88,49 +102,52 @@ function Wills() {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-
+  
     if (!validateForm()) return;
-
+  
     const updatedWills = wills.map((will) =>
       will.id === selectedWill.id
         ? {
             ...will,
-            beneficiaries: beneficiaries.length,
-            status: "Active",
-            lastModified: new Date().toLocaleString(),
+            beneficiaries: beneficiaries.map((b) => ({
+              name: b.name,
+              percentage: b.percentage,
+            })), // Preserve the updated array of beneficiaries
             asset,
             releaseDate,
+            status: "Active",
+            lastModified: new Date().toLocaleString(),
           }
         : will
     );
-
+  
     setWills(updatedWills);
     resetForm();
     setIsModalOpen(false);
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (!validateForm()) return;
-
-    if (isEditMode) {
-      handleUpdate(e);
-    } else {
-      const newWill = {
-        id: `#W-2024-${Math.floor(1000 + Math.random() * 9000)}`,
-        created: new Date().toLocaleDateString(),
-        status: "Active",
-        beneficiaries: beneficiaries.length,
-        lastModified: "Just now",
-        asset,
-        releaseDate,
-      };
-
-      setWills([...wills, newWill]);
-      resetForm();
-      setIsModalOpen(false);
-    }
+  
+    const newWill = {
+      id: `#W-2024-${Math.floor(1000 + Math.random() * 9000)}`,
+      created: new Date().toLocaleDateString(),
+      status: "Active",
+      beneficiaries: beneficiaries.map((b) => ({
+        name: b.name,
+        percentage: b.percentage,
+      })), // Ensure this is always an array
+      asset,
+      releaseDate,
+      lastModified: "Just now",
+    };
+  
+    setWills([...wills, newWill]);
+    resetForm();
+    setIsModalOpen(false);
   };
 
   const handleDelete = () => {
@@ -154,11 +171,12 @@ function Wills() {
       setIsEditMode(true);
       setSelectedWill(will);
       setBeneficiaries(
-        beneficiariesList.map((name, i) => ({
-          name: will.beneficiaries > i ? name : "",
-          percentage:
-            will.beneficiaries > i ? (100 / will.beneficiaries).toString() : "",
-        }))
+        Array.isArray(will.beneficiaries)
+          ? will.beneficiaries.map((b) => ({
+              name: b.name,
+              percentage: b.percentage,
+            }))
+          : []
       );
       setAsset(will.asset || "");
       setReleaseDate(will.releaseDate || "");
@@ -225,7 +243,7 @@ function Wills() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Will Management</h1>
         <button
-          onClick={() => openModal()}
+          onClick={handleCreateNewWill}
           className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -314,7 +332,164 @@ function Wills() {
         </Table>
       </div>
 
-      <Modal
+      {isWillFormOpen && (
+        <WillForm onClose={handleFormClose} onSubmit={handleWillSubmit} />
+      )}
+
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={isEditMode ? "Edit Will" : "View Will"}
+          className="max-w-4xl h-[90vh] overflow-auto"
+        >
+          {isEditMode ? (
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block mb-1 text-sm font-medium">Asset</label>
+                <Select
+                  className="w-full"
+                  value={asset}
+                  onChange={(e) => setAsset(e.target.value)}
+                >
+                  <option value="">Select Asset</option>
+                  {assets.map((asset, index) => (
+                    <option key={index} value={asset}>
+                      {asset}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-1 text-sm font-medium">Beneficiaries</label>
+                {beneficiaries.map((beneficiary, index) => (
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <Select
+                      value={beneficiary.name || ""}
+                      onChange={(e) => {
+                        const newBeneficiaries = [...beneficiaries];
+                        newBeneficiaries[index].name = e.target.value;
+                        setBeneficiaries(newBeneficiaries);
+                      }}
+                      className="flex-1 appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
+                    >
+                      <option value="" disabled>
+                        Select Beneficiary
+                      </option>
+                      {beneficiariesList.map((beneficiaryName, i) => (
+                        <option key={i} value={beneficiaryName}>
+                          {beneficiaryName}
+                        </option>
+                      ))}
+                    </Select>
+
+                    <Input
+                      type="number"
+                      placeholder="%"
+                      value={beneficiary.percentage}
+                      onChange={(e) => {
+                        const newPercentage = parseFloat(e.target.value || 0);
+                        if (
+                          calculateTotalPercentage() -
+                            (beneficiary.percentage || 0) +
+                            newPercentage <=
+                          100
+                        ) {
+                          const newBeneficiaries = [...beneficiaries];
+                          newBeneficiaries[index].percentage = newPercentage;
+                          setBeneficiaries(newBeneficiaries);
+                        } else {
+                          alert(
+                            "The total allocation percentage cannot exceed 100%."
+                          );
+                        }
+                      }}
+                      className="w-20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeBeneficiary(index)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addBeneficiary}
+                  className="text-blue-500 hover:underline"
+                >
+                  Add Beneficiary
+                </button>
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-1 text-sm font-medium">
+                  Release Date & Time
+                </label>
+                <Input
+                  type="datetime-local"
+                  value={releaseDate}
+                  onChange={(e) => setReleaseDate(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              <div className="flex space-x-2">
+                <Button
+                  variant="link"
+                  onClick={handleDelete}
+                  className="text-red-600"
+                >
+                  Delete Will
+                </Button>
+                <Button type="submit" onClick={handleUpdate} className="w-full">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div>
+              <h2 className="text-xl font-bold mb-4">Will Details</h2>
+              <p>
+                <strong>Asset:</strong> {selectedWill.asset}
+              </p>
+              <p>
+                <strong>Beneficiaries:</strong>
+              </p>
+              <ul>
+                {selectedWill.beneficiaries.map((b, index) => (
+                  <li key={index}>
+                    {b.name} - {b.percentage}%
+                  </li>
+                ))}
+              </ul>
+              <p>
+                <strong>Release Date:</strong> {new Date(selectedWill.releaseDate).toLocaleString()}
+              </p>
+              <div className="mt-6 flex space-x-4">
+                <Button
+                  onClick={() => openModal(selectedWill)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Edit Will
+                </Button>
+                <Button
+                  onClick={handleDelete}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Delete Will
+                </Button>
+              </div>
+            </div>
+          )}
+        </Modal>
+      )}
+
+
+      {/* <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={isEditMode ? "Edit Will" : "Create New Will"}
@@ -441,7 +616,7 @@ function Wills() {
             </Button>
           )}
         </form>
-      </Modal>
+      </Modal> */}
     </div>
   );
 }
