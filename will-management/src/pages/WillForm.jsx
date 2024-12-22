@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { TransactionContext } from "../context/context";
+import Button from "../components/ui/Button";
 
-const WillForm = () => {
+const WillForm = ({ onClose, onSubmit }) => {
   const { createWill } = useContext(TransactionContext);
   const [willId, setWillId] = useState(0);
   const [releaseTime, setReleaseTime] = useState(0);
@@ -24,18 +25,66 @@ const WillForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Validate fields
+    if (!willId) {
+      alert("Will ID is required.");
+      return;
+    }
+  
+    if (!releaseTime) {
+      alert("Release Time is required.");
+      return;
+    }
+  
+    if (!assetName.trim()) {
+      alert("Asset Name is required.");
+      return;
+    }
+  
+    if (!assetCategory.trim()) {
+      alert("Asset Category is required.");
+      return;
+    }
+  
+    if (!amount || parseFloat(amount) <= 0) {
+      alert("A valid Amount is required.");
+      return;
+    }
+  
+    if (beneficiaries.length === 0) {
+      alert("At least one beneficiary is required.");
+      return;
+    }
+  
+    for (const beneficiary of beneficiaries) {
+      if (!beneficiary.address.trim()) {
+        alert("Each beneficiary must have a valid address.");
+        return;
+      }
+      if (!beneficiary.stake || parseFloat(beneficiary.stake) <= 0) {
+        alert("Each beneficiary must have a valid stake percentage.");
+        return;
+      }
+      if (!beneficiary.name.trim()) {
+        alert("Each beneficiary must have a name.");
+        return;
+      }
+    }
+  
+    // Convert releaseTime to UNIX timestamp
+    const rt = Math.floor(new Date(releaseTime).getTime() / 1000);
+  
     // Format beneficiary data from the form
     const beneficiaryData = {
       addresses: beneficiaries.map((beneficiary) => beneficiary.address),
       shares: beneficiaries.map((beneficiary) => beneficiary.stake), // Stake represents the share
       names: beneficiaries.map((beneficiary) => beneficiary.name),
     };
-
+  
     // Extract form values
     const will = parseInt(willId); // Ensure Will ID is an integer
-    const rt = parseInt(releaseTime); // Ensure release time is an integer (UNIX timestamp)
-
+  
     // Call the createWill function
     await createWill(
       will,
@@ -45,6 +94,20 @@ const WillForm = () => {
       assetCategory,
       "0.01"
     );
+
+    const w = {
+      id: `#W-${new Date().getTime()}`, // Unique ID
+      created: new Date().toLocaleDateString(),
+      status: "Active", // Default to Active
+      beneficiaries,
+      asset: assetName,
+      releaseTime: rt,
+      lastModified: "Just now",
+    };
+
+    onSubmit(w); // Send data to parent component
+    onClose();
+
     // e.preventDefault();
     // const willId = 11; // Example Will ID
     // const beneficiaryData = {
@@ -88,10 +151,10 @@ const WillForm = () => {
         {/* Release Time */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Release Time (UNIX Timestamp)
+            Release Time
           </label>
           <input
-            type="number"
+            type="datetime-local"
             value={releaseTime}
             onChange={(e) => setReleaseTime(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -180,6 +243,19 @@ const WillForm = () => {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
+            {/* Remove Beneficiary Button */}
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  const updatedBeneficiaries = beneficiaries.filter((_, i) => i !== index);
+                  setBeneficiaries(updatedBeneficiaries);
+                }}
+                className="text-sm text-red-600 hover:text-red-800"
+              >
+                Remove Beneficiary
+              </button>
+            </div>
           </div>
         ))}
 
@@ -191,14 +267,15 @@ const WillForm = () => {
           Add Beneficiary
         </button>
 
+
         {/* Submit Button */}
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
+        <div className="mt-6 flex space-x-4">
+          <Button type="button" onClick={onClose} className="bg-gray-500 text-white">
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-indigo-600 text-white">
             Submit
-          </button>
+          </Button>
         </div>
       </form>
     </div>

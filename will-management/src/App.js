@@ -40,7 +40,7 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
 
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/wills" element={<WillForm />} />
+          <Route path="/wills" element={<Wills />} />
           <Route path="/beneficiaries" element={<Beneficiaries />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/assets" element={<Assets />} />
