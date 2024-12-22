@@ -27,9 +27,7 @@ const initialWills = [
     id: "#W-2024-002",
     created: "Jan 14, 2024",
     status: "Pending",
-    beneficiaries: [
-      { name: "Charlie", percentage: 100 },
-    ],
+    beneficiaries: [{ name: "Charlie", percentage: 100 }],
     asset: "Gold",
     releaseDate: "2024-12-25T18:00",
     lastModified: "1 day ago",
@@ -102,9 +100,9 @@ function Wills() {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-  
+
     if (!validateForm()) return;
-  
+
     const updatedWills = wills.map((will) =>
       will.id === selectedWill.id
         ? {
@@ -120,18 +118,17 @@ function Wills() {
           }
         : will
     );
-  
+
     setWills(updatedWills);
     resetForm();
     setIsModalOpen(false);
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     if (!validateForm()) return;
-  
+
     const newWill = {
       id: `#W-2024-${Math.floor(1000 + Math.random() * 9000)}`,
       created: new Date().toLocaleDateString(),
@@ -144,7 +141,7 @@ function Wills() {
       releaseDate,
       lastModified: "Just now",
     };
-  
+
     setWills([...wills, newWill]);
     resetForm();
     setIsModalOpen(false);
@@ -236,7 +233,6 @@ function Wills() {
 
   //   doc.save(`${will.id}.pdf`);
   // };
-
 
   return (
     <div className="p-6 space-y-6">
@@ -362,7 +358,9 @@ function Wills() {
               </div>
 
               <div className="mb-4">
-                <label className="block mb-1 text-sm font-medium">Beneficiaries</label>
+                <label className="block mb-1 text-sm font-medium">
+                  Beneficiaries
+                </label>
                 {beneficiaries.map((beneficiary, index) => (
                   <div key={index} className="flex items-center gap-2 mb-2">
                     <Select
@@ -467,7 +465,8 @@ function Wills() {
                 ))}
               </ul>
               <p>
-                <strong>Release Date:</strong> {new Date(selectedWill.releaseDate).toLocaleString()}
+                <strong>Release Date:</strong>{" "}
+                {new Date(selectedWill.releaseDate).toLocaleString()}
               </p>
               <div className="mt-6 flex space-x-4">
                 <Button
@@ -487,7 +486,6 @@ function Wills() {
           )}
         </Modal>
       )}
-
 
       {/* <Modal
         isOpen={isModalOpen}
