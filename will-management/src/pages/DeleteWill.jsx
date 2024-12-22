@@ -1,15 +1,37 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TransactionContext } from "../context/context";
+import { useLocation } from "react-router-dom";
 
 const DeleteWillForm = () => {
   const { deleteWill } = useContext(TransactionContext);
-  const [willId, setWillId] = useState(0);
+  const { state } = useLocation(); // Access passed state
+  const willData = state?.will || {}; // Default to an empty object if no state passed
+
+  // Helper function to convert hex to int
+  const parseHexToInt = (hex) => parseInt(hex, 16);
+
+  const [willId, setWillId] = useState(
+    willData?.willId?._hex ? parseHexToInt(willData.willId._hex) : 0
+  );
+
+  useEffect(() => {
+    // Ensure willId is set properly when component mounts
+    if (willData?.willId?._hex) {
+      setWillId(parseHexToInt(willData.willId._hex));
+    }
+  }, [willData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Call the deleteWill function
-    await deleteWill(willId);
+    try {
+      // Call the deleteWill function
+      await deleteWill(willId);
+      alert(`Will with ID ${willId} has been successfully deleted.`);
+    } catch (error) {
+      console.error("Error deleting will:", error);
+      alert("Failed to delete the will. Please try again.");
+    }
   };
 
   return (
@@ -18,14 +40,12 @@ const DeleteWillForm = () => {
       <form onSubmit={handleSubmit}>
         {/* Will ID */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Will ID
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Will ID</label>
           <input
             type="number"
             value={willId}
-            onChange={(e) => setWillId(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled // Disable editing of Will ID
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
           />
         </div>
 
